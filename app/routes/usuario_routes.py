@@ -8,6 +8,9 @@ usuario_routes = Blueprint('usuario_routes', __name__)
 @usuario_routes.route('/criaLogin', methods=['POST'])
 def criaLogin():
     data = request.get_json()
+    usuario_existente = Usuario.query.filter_by(email=data['email']).first()
+    if usuario_existente:
+        return jsonify({'message': 'Já existe um usuário com esse email'}), 400
     novo_usuario = Usuario(**data)
     db.session.add(novo_usuario)
     db.session.commit()
