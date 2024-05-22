@@ -7,8 +7,8 @@ class AreaAlagada(db.Model):
     logradouro = db.Column(db.String)
     cidade = db.Column(db.String)
     bairro = db.Column(db.String)
-    descricao = db.Column(db.String, validators=(validators.Optional()))
-    cep = db.Column(db.String, validators=(validators.Optional()))
+    descricao = db.Column(db.String)
+    cep = db.Column(db.String)
 
     def __init__(self, logradouro, cidade, bairro, descricao, cep):
         self.logradouro = logradouro
