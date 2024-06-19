@@ -2,9 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import flask_login
 from flask_cors import CORS
+from app.telegram_bot.bot import bot  # Importa o bot do Telegram
 
 db = SQLAlchemy()
 login_manager = flask_login.LoginManager()
+
 
 def create_app():
     app = Flask(__name__)
@@ -19,3 +21,11 @@ def create_app():
         db.create_all()
 
     return app
+
+# Inicialização do bot do Telegram
+
+
+def initialize_telegram_bot():
+    from telegram_bot.bot import bot
+    bot.infinity_polling()  # Inicia o bot do Telegram
+    return bot
