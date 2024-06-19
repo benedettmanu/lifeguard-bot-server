@@ -64,3 +64,37 @@ def confirmarAreaAlagada():
 def listaAreaAlagada():
     areas_alagadas = AreaAlagada.query.all()
     return jsonify([{'id': area._id, 'logradouro': area.logradouro, 'cidade': area.cidade, 'bairro': area.bairro, 'descricao': area.descricao, 'cep': area.cep, 'data': area.data, 'area_confirmada': area.area_confirmada} for area in areas_alagadas])
+
+
+@area_alagada_routes.route("/listaAreasAlagadasConfirmadas")
+def listaAreasAlagadasConfirmadas():
+    current_date = db.func.date(datetime.now(timezone.utc))
+    confirmed_flooded_areas = AreaAlagada.query.filter(
+        db.func.date(AreaAlagada.data) == current_date,
+        AreaAlagada.area_confirmada == True
+    ).all()
+
+    grouped_by_city_neighborhood = {}
+    for area in confirmed_flooded_areas:
+        key = (area.cidade, area.bairro)
+        if key not in grouped_by_city_neighborhood:
+            grouped_by_city_neighborhood[key] = []
+        else:
+            existing_streets = [d['logradouro'] for d in grouped_by_city_neighborhood[key]]
+            if area.logradouro in existing_streets:
+                continue 
+        grouped_by_city_neighborhood[key].append({
+            'logradouro': area.logradouro,
+            'descricao': area.descricao
+        })
+
+    result = []
+    for (city, neighborhood), streets in grouped_by_city_neighborhood.items():
+        result.append({
+            'bairro': neighborhood,
+            'cidade': city,
+            'ruas': streets
+        })
+
+    return jsonify(result)
+
