@@ -24,6 +24,7 @@ pip install SQLAlchemy
 pip install Flask-SQLAlchemy
 pip install flask-login
 pip install flask-cors
+pip install pyTelegramBotAPI
 ```
 
 ## Execution
