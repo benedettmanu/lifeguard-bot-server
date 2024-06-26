@@ -11,5 +11,4 @@ app.register_blueprint(area_alagada_routes)
 
 
 if __name__ == '__main__':
-    bot.infinity_polling()
     app.run(debug=True)
