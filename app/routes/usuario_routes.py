@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, redirect
 from app import db
 from app.models.usuario import Usuario
 import flask_login
+from flask import current_app as app
 
 usuario_routes = Blueprint('usuario_routes', __name__)
 
@@ -15,6 +16,11 @@ def criaLogin():
     novo_usuario = Usuario(**data)
     db.session.add(novo_usuario)
     db.session.commit()
+
+    # bot
+    bot_username = 'Pedro_Salva_Vidas_bot'  # substitua pelo username do seu bot
+    bot_link = f"https://t.me/{bot_username}?start={novo_usuario.id}"
+
     return jsonify({'message': 'Usuário criado com sucesso!'}), 201
 
 
@@ -47,14 +53,14 @@ def listaUsuario():
     return jsonify([{'id': usuario.id, 'nome': usuario.nome, 'email': usuario.email, 'telefone': usuario.telefone, 'cep': usuario.cep, 'logradouro': usuario.logradouro, 'cidade': usuario.cidade, 'bairro': usuario.bairro, 'autoridade': usuario.is_authority, 'adm': usuario.is_adm} for usuario in usuarios])
 
 
-@app.route('/redirecionar_para_bot', methods=['GET'])
+@usuario_routes.route('/redirecionar_para_bot', methods=['GET'])
 def redirecionar_para_bot():
     try:
         # Obtém o ID do usuário cadastrado no seu site
         usuario_id = request.args.get('usuario_id')
 
         # URL base do seu bot no Telegram
-        bot_username = 'Pedro_Salva_Vidas_bot'
+        bot_username = 'Pedro_Salva_Vidas_bot'  # substitua pelo username do seu bot
         telegram_url = f"https://t.me/{bot_username}"
 
         # Constrói o link de redirecionamento para o Telegram com o parâmetro start
