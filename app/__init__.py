@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import flask_login
 from flask_cors import CORS
 
+
 db = SQLAlchemy()
 login_manager = flask_login.LoginManager()
 

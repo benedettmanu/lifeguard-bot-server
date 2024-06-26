@@ -1,7 +1,15 @@
 from app import db
-from app.models.usuario import Usuario
+from app.models import Usuario
 import telebot
+from flask import current_app
+import logging
 
+
+# Configuração básica de logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 API_TOKEN = '7239417259:AAFyNA5QS8sqFu44CPm56gsknAOPQGpkz2g'
 
@@ -32,20 +40,25 @@ def obter_usuarios_por_cep(cep):
 
 @bot.message_handler(commands=['start'])
 def handle_start(message):
+    logger.info(f"Recebido comando /start de {message.from_user.username}")
+
     try:
         user_id = message.from_user.id
         chat_id = message.chat.id
-        usuario = Usuario.query.filter_by(user_id=user_id).first()
 
-        if usuario:
-            usuario.chat_id = chat_id
-            db.session.commit()
-            bot.send_message(
-                chat_id, "Olá! Eu sou Pedro, o bot salva vidas! Seu ID foi registrado.")
-        else:
-            bot.send_message(
-                chat_id, "Usuário não encontrado no banco de dados. Por favor, registre-se no site.")
+        with current_app.app_context():
+            from app import db  # Import dentro do contexto de aplicação
+            usuario = Usuario.query.filter_by(user_id=user_id).first()
+
+            if usuario:
+                usuario.chat_id = chat_id
+                db.session.commit()
+                bot.send_message(chat_id, "Olá! Seu ID foi registrado.")
+            else:
+                bot.send_message(
+                    chat_id, "Usuário não encontrado. Registre-se no site.")
     except Exception as e:
+        logger.error(f"Erro ao registrar ID: {str(e)}")
         bot.send_message(message.chat.id, f"Erro ao registrar ID: {str(e)}")
 
 
@@ -69,5 +82,5 @@ def handle_enviar_alerta(message):
         bot.send_message(message.chat.id, f"Erro ao enviar alerta: {str(e)}")
 
 
-# Inicie o bot
-bot.polling()
+if __name__ == "__main__":
+    bot.polling()
