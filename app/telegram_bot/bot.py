@@ -11,7 +11,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-API_TOKEN = '7239417259:AAFyNA5QS8sqFu44CPm56gsknAOPQGpkz2g'
+API_TOKEN = '7014144145:AAHuMR1-5R26XuSySva0m0jWCIrDyKplIEw'
 
 
 bot = telebot.TeleBot(API_TOKEN)
@@ -57,6 +57,10 @@ def handle_start(message):
             else:
                 bot.send_message(
                     chat_id, "Usuário não encontrado. Registre-se no site.")
+    except RuntimeError as e:
+        logger.error(f"Erro ao registrar ID: {str(e)}")
+        bot.send_message(
+            message.chat.id, "Erro ao configurar a conexão com o site web. Tente novamente mais tarde.")
     except Exception as e:
         logger.error(f"Erro ao registrar ID: {str(e)}")
         bot.send_message(message.chat.id, f"Erro ao registrar ID: {str(e)}")

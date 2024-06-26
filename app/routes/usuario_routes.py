@@ -5,6 +5,7 @@ import flask_login
 
 usuario_routes = Blueprint('usuario_routes', __name__)
 
+
 @usuario_routes.route('/criaLogin', methods=['POST'])
 def criaLogin():
     data = request.get_json()
@@ -44,3 +45,23 @@ def login():
 def listaUsuario():
     usuarios = Usuario.query.all()
     return jsonify([{'id': usuario.id, 'nome': usuario.nome, 'email': usuario.email, 'telefone': usuario.telefone, 'cep': usuario.cep, 'logradouro': usuario.logradouro, 'cidade': usuario.cidade, 'bairro': usuario.bairro, 'autoridade': usuario.is_authority, 'adm': usuario.is_adm} for usuario in usuarios])
+
+
+@app.route('/redirecionar_para_bot', methods=['GET'])
+def redirecionar_para_bot():
+    try:
+        # Obtém o ID do usuário cadastrado no seu site
+        usuario_id = request.args.get('usuario_id')
+
+        # URL base do seu bot no Telegram
+        bot_username = 'Pedro_Salva_Vidas_bot'
+        telegram_url = f"https://t.me/{bot_username}"
+
+        # Constrói o link de redirecionamento para o Telegram com o parâmetro start
+        bot_link = f"{telegram_url}?start={usuario_id}"
+
+        # Redireciona o usuário para o link gerado
+        return redirect(bot_link)
+    except Exception as e:
+        # Trate qualquer exceção aqui
+        return f"Erro ao redirecionar para o bot: {str(e)}"
