@@ -17,8 +17,7 @@ def criaLogin():
     db.session.commit()
 
     # bot
-    bot_username = 'Pedro_Salva_Vidas_bot'  # substitua pelo username do seu bot
-    bot_link = f"https://t.me/{bot_username}?start={novo_usuario.id}"
+    bot_link = f"https://t.me/Pedro_Salva_Vidas_bot?start={novo_usuario.id}"
 
     # Adiciona um print para depurar
     print(f"Redirecionando para o bot: {bot_link}")
@@ -61,9 +60,8 @@ def redirecionar_para_bot():
         # Obtém o ID do usuário cadastrado no seu site
         usuario_id = request.args.get('usuario_id')
 
-        # URL base do seu bot no Telegram
-        bot_username = 'Pedro_Salva_Vidas_bot'  # substitua pelo username do seu bot
-        telegram_url = f"https://t.me/{bot_username}"
+        # URL base do seu bot
+        telegram_url = f"https://t.me/Pedro_Salva_Vidas_bot"
 
         # Constrói o link de redirecionamento para o Telegram com o parâmetro start
         bot_link = f"{telegram_url}?start={usuario_id}"
