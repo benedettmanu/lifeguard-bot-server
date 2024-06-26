@@ -2,7 +2,6 @@ from flask import Blueprint, jsonify, request, redirect
 from app import db
 from app.models.usuario import Usuario
 import flask_login
-from flask import current_app as app
 
 usuario_routes = Blueprint('usuario_routes', __name__)
 
@@ -21,7 +20,10 @@ def criaLogin():
     bot_username = 'Pedro_Salva_Vidas_bot'  # substitua pelo username do seu bot
     bot_link = f"https://t.me/{bot_username}?start={novo_usuario.id}"
 
-    return jsonify({'message': 'Usuário criado com sucesso!'}), 201
+    # Adiciona um print para depurar
+    print(f"Redirecionando para o bot: {bot_link}")
+
+    return jsonify({'message': 'Usuário criado com sucesso!', 'bot_link': bot_link}), 201
 
 
 @usuario_routes.route('/login', methods=['POST'])
